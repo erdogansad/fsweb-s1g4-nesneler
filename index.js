@@ -15,8 +15,13 @@ const serpmeKahvalti = {isim: "Serpme Kahvaltı", fiyat: 16, kategori:"Kahvaltı
 */
 
 
-function MenuElemaniOlustur(/*Kodlar buraya*/){
-	/*Kodlar buraya*/
+function MenuElemaniOlustur(name, price, cat){
+	let obj = {
+		isim: name,
+		fiyat: price,
+		kategori: cat
+	};
+	return obj;
 }
 
 
@@ -31,7 +36,7 @@ function MenuElemaniOlustur(/*Kodlar buraya*/){
 	Örnek: MenuElemaniOlustur("Karışık Pizza",5,"Pizzalar") şunu döndürür: {isim:"Karışık Pizza",fiyat:5,kategori:"Pizzalar"}
 */
 
-
+console.log(MenuElemaniOlustur("Karışık Pizza",5,"Pizzalar"));
 
 /* Görev 2: 
 	Özel bir öğle yemeği yiyorsun! Öğretmen ve öğrencilere %25, diğer kişilere %10 indirim var. Aşağıdaki burger nesnesine, indirimi fiyatı otomatik olarak hesaplayan bir metot ekleyin.
@@ -50,7 +55,15 @@ const burger = {
 	isim: "Burger", 
 	fiyat: 18, 
 	kategori: "Öğle Yemeği", 
-
+	indirim: function(parm){
+		let discounts = {
+			"öğretmen": 0.25,
+			"öğrenci": 0.25,
+			"diğer": 0.1
+		};
+		let totalPrice = this.fiyat - (this.fiyat*discounts[parm]);
+		return totalPrice;
+	}
 }
 
 
@@ -72,6 +85,7 @@ const degerlendirmeler = [
 	1. Sadece Ahmet'in geribildirimini konsolda görüntüleyin - fonksiyona gerek yok
 */
 
+console.log(degerlendirmeler[5]['geribildirim']);
 
 
 /*  Görev 4 (ototest yok):  
@@ -80,7 +94,8 @@ const degerlendirmeler = [
 	2. degerlendirmeler dizisini konsolda görüntüleyerek çalışmanızı kontrol edin
 */
 
-
+degerlendirmeler[7]['geribildirim'] = "bu mekan bir harika dostum, yine de garsonun gülümsememesinden puan kırdım";
+console.log(degerlendirmeler[7]['geribildirim']);
 
 /*  Görev 5: 
 	isim, puan, geribildirim'i içeren bir değerlendirme nesnesi oluşturup, yeni değerlendirmeyi mevcut dizinin(array) sonuna ekleyip sonuç dizisini döndüren bir fonksiyon tanımlayın. 
@@ -94,9 +109,14 @@ const degerlendirmeler = [
 */
 
 
-function DegerledirmeEkle(/*Kodlar buraya */){
-	/*Kodlar buraya */
-	
+function DegerledirmeEkle(arr, name, score, fb){
+	let newData = {
+		isim: name,
+		puan: score,
+		geribildirim: fb
+	};
+	arr.push(newData);
+	return arr;	
 }
 
 
@@ -112,9 +132,9 @@ function DegerledirmeEkle(/*Kodlar buraya */){
 */
 
 
-function AnahtardanDegerlendirmeAl(/*Kodlar buraya*/) {
-	/*Kodlar buraya*/
-
+function AnahtardanDegerlendirmeAl(arr, key) {
+	let user = arr[key];
+	return user.isim + " isimli kişi " + user.puan + " puan verdi ve şunları yazdı: " + user.geribildirim;
 }
 
 
@@ -132,8 +152,9 @@ function AnahtardanDegerlendirmeAl(/*Kodlar buraya*/) {
 */
 
 
-function SonDegerlendirmeyiAl(/*Kodlar buraya*/) {
-	/*Kodlar buraya*/
+function SonDegerlendirmeyiAl(arr) {
+	let lastUser = arr[arr.length - 1];
+	return lastUser.isim + " isimli kişi " + lastUser.puan + " puan verdi ve şunları yazdı: " + lastUser.geribildirim;
 } 
 
 
@@ -154,10 +175,17 @@ function SonDegerlendirmeyiAl(/*Kodlar buraya*/) {
 	]
 */
 
-function PuanaGoreDegerlendirmeAl(/* Kodlar buraya */) {
-    /* Kodlar buraya */
+function PuanaGoreDegerlendirmeAl(arr, score) {
+    let filteredArr = [];
+	for(let i = 0; i < arr.length; i++){
+		if(arr[i]['puan'] >= score && score + 1 > arr[i]['puan']){
+			filteredArr.push(arr[i]);
+		}
+	}
+	return filteredArr;
 }
 
+console.log(PuanaGoreDegerlendirmeAl(degerlendirmeler, 4));
 
 /*  BONUS 2:    
 	UzunDegerlendirmeleriAl fonksiyonuna aşağıdakileri uygulayın:
@@ -166,10 +194,19 @@ function PuanaGoreDegerlendirmeAl(/* Kodlar buraya */) {
 	
 */
 
-function UzunDegerlendirmeleriAl(/* Kodlar buraya */) {
-    /* Kodlar buraya */
+function UzunDegerlendirmeleriAl(arr) {
+    let filteredArr = [];
+	for(let i = 0; i < arr.length; i++){
+		let splitted = arr[i]['geribildirim'].split(" "),
+			length = splitted.length;
+		if(length > 15){
+			filteredArr.push(arr[i]);
+		}
+	}
+	return filteredArr;
 }
 
+console.log(UzunDegerlendirmeleriAl(degerlendirmeler));
 
 /*  BONUS 3:  
 	Bu ek görevde degerlendirmeler dizisi kullanılmayacak!  Bu görevde kendi nesnenizi yaratmanız gerekmektedir.
@@ -188,11 +225,24 @@ function UzunDegerlendirmeleriAl(/* Kodlar buraya */) {
 	Bu 110 döndürmelidir çünkü başlangıç kilometre sayacını 10 olarak tanımladık ve 100 km arabayı sürdük.
 */
 
+const carInfo = {
+	araba1: {
+		km: 24,
+		addKm: function(parm){
+			parm = parseInt(parm);
+			let newKm = this.km + parm;
+			return [this.km, newKm];
+		}
+	}
+};
 
-function arabaYapici(/* Kodlar buraya */) {
-    /* Kodlar buraya */
-    
+function arabaYapici(carName, taken) {
+	let car = carInfo[carName],
+		kmVals = car.addKm(taken);
+	return "Önceki KM: " + kmVals[0] + " -|\- Eklenen KM: " + taken + " -|\- Toplam KM: " + kmVals[1];
 }
+
+console.log(arabaYapici("araba1", 278))
 
 
 /*  Buradan aşağıdaki kodları değiştirmeyin lütfen */
